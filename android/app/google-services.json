@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "724417644187",
+    "project_id": "storeapp-fce52",
+    "storage_bucket": "storeapp-fce52.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:724417644187:android:e70e67d6ad668c84df283e",
+        "android_client_info": {
+          "package_name": "com.example.examen_2p"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "724417644187-lh8t9j6ihaski4rlj1j85mt70n5j4kuf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA3XjLNj7Dkqe-DUAgsqAVA7z6JDBwriL4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "724417644187-lh8t9j6ihaski4rlj1j85mt70n5j4kuf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -124,82 +124,75 @@ class AlertRegister extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-          shape: RoundedRectangleBorder(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Container(
+          height: 300,
+          width: 200,
+          decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: Colors.black,
+            ),
+            color: Colors.white,
           ),
-          child: Container(
-              height: 300,
-              width: 200,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                  color: Colors.black,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Hero(
+                tag: 'Register',
+                child: Lottie.asset(
+                  'assets/json/register.json',
+                  height: 100,
                 ),
-                color: Colors.white,
               ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Hero(
-                    tag: carta['titulo'],
-                    child: Lottie.asset(
-                      'assets/json/register.json',
-                      height: 100,
-                    ),
+              const Text(
+                'Register a',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              ListTile(
+                leading: CircleAvatar(
+                  radius: 25,
+                  backgroundColor: AppTheme.secondary,
+                  child: Hero(
+                    tag: 'user',
+                    child: Lottie.asset('assets/json/user.json'),
                   ),
-                  const Text(
-                    'Register a',
-                    style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold),
+                ),
+                title: const Text(
+                  'User',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                onTap: () {
+                  Navigator.of(context).pushNamed('users');
+                },
+                trailing: const Icon(Icons.app_registration),
+              ),
+              const Divider(),
+              ListTile(
+                leading: CircleAvatar(
+                  radius: 25,
+                  backgroundColor: AppTheme.secondary,
+                  child: Hero(
+                    tag: 'product',
+                    child: Lottie.asset('assets/json/products.json'),
                   ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  
-                  ListTile(
-                    leading: CircleAvatar(
-                      radius: 25,
-                      backgroundColor: AppTheme.secondary,
-                      child: Hero(
-                        tag: 'user',
-                        child: Lottie.asset(
-                            'assets/json/user.json'),
-                      ),
-                    ),
-                    title: const Text(
-                      'User',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold),
-                    ),
-                    onTap: () {
-                     Navigator.of(context).pushNamed('users');
-                    },
-                    trailing: const Icon(Icons.app_registration),
-                  ),
-                  const Divider(),
-                  ListTile(
-                    leading: CircleAvatar(
-                      radius: 25,
-                      backgroundColor: AppTheme.secondary,
-                      child: Hero(
-                        tag: 'product',
-                        child: Lottie.asset(
-                            'assets/json/products.json'),
-                      ),
-                    ),
-                    title: const Text(
-                      'Product',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold),
-                    ),
-                    onTap: () {
-                      Navigator.of(context).pushNamed('products');
-                    },
-                    trailing: const Icon(Icons.app_registration),
-                  ),
-                ],
-              )),
-        );
+                ),
+                title: const Text(
+                  'Product',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                onTap: () {
+                  Navigator.of(context).pushNamed('products');
+                },
+                trailing: const Icon(Icons.app_registration),
+              ),
+            ],
+          )),
+    );
   }
 }

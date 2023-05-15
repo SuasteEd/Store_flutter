@@ -3,16 +3,22 @@ import 'package:flutter/material.dart';
 class CustomTextFormField extends StatelessWidget {
   final String labelText;
   final String hintText;
-  final Icon prefixIcon;
+  final IconData icon;
   final TextEditingController controller;
   final bool obscureText;
+  final String validationMessage;
+  final TextInputType keyboardType;
+  final void Function(String)? changes;
   const CustomTextFormField({
     super.key,
     required this.labelText,
     required this.hintText,
-    required this.prefixIcon,
+    required this.icon,
     required this.controller,
-    required this.obscureText,
+    required this.obscureText, 
+    required this.validationMessage,
+    required this.keyboardType, 
+    this.changes
   });
 
   @override
@@ -24,15 +30,15 @@ class CustomTextFormField extends StatelessWidget {
         controller: controller,
         obscureText: obscureText,
         validator: (value) {
-          if (value!.isEmpty) {
-            return 'This field is required';
-          }
-          return null;
-        },
+        if (value!.isEmpty) {
+          return validationMessage;
+        }
+        return null;
+      },
         decoration: InputDecoration(
           labelText: labelText,
           hintText: hintText,
-          prefixIcon: prefixIcon,
+          prefixIcon: Icon(icon),
           labelStyle: const TextStyle(color: Colors.black),
           hintStyle: const TextStyle(color: Colors.black),
           enabledBorder: OutlineInputBorder(
