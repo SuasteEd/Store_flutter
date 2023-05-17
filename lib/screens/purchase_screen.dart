@@ -27,41 +27,43 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
       appBar: AppBar(
         title: Text('Purchase Screen'),
       ),
-      body: Center(
-        child: Column(
-          children: [
-            const CustomCircleAvatar(
-                tag: 'Purchase', json: 'assets/json/purchase.json'),
-            const SizedBox(height: 20),
-            PurchaseForm(
-                formKey: _formKey,
-                idProduct: _idProduct,
-                name: _name,
-                pieces: _pieces,
-                ida: _ida),
-            CustomButton(
-                text: _isPressed
-                    ? const LoadingButton()
-                    : const Text(
-                        'Save',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                            fontFamily: 'Poppins'),
-                      ),
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    _isPressed = true;
-                    setState(() {});
-                    Future.delayed(const Duration(seconds: 1), () {
-                      _isPressed = false;
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            children: [
+              const CustomCircleAvatar(
+                  tag: 'Purchase', json: 'assets/json/purchase.json'),
+              const SizedBox(height: 20),
+              PurchaseForm(
+                  formKey: _formKey,
+                  idProduct: _idProduct,
+                  name: _name,
+                  pieces: _pieces,
+                  ida: _ida),
+              CustomButton(
+                  text: _isPressed
+                      ? const LoadingButton()
+                      : const Text(
+                          'Save',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                              fontFamily: 'Poppins'),
+                        ),
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      _isPressed = true;
                       setState(() {});
-                    });
-                    alertSucces(context, 'Purchase saved successfully!');
-                  }
-                })
-          ],
+                      Future.delayed(const Duration(seconds: 1), () {
+                        _isPressed = false;
+                        setState(() {});
+                      });
+                      alertSucces(context, 'Purchase saved successfully!');
+                    }
+                  })
+            ],
+          ),
         ),
       ),
     );

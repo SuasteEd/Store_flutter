@@ -29,6 +29,7 @@ class CustomTextFormField extends StatelessWidget {
         cursorColor: Colors.black,
         controller: controller,
         obscureText: obscureText,
+        keyboardType: keyboardType,
         validator: (value) {
         if (value!.isEmpty) {
           return validationMessage;
