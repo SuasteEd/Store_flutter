@@ -23,6 +23,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> fillData() async {
     await controller.getAllProducts();
+    await controller.getAllUsers();
     Future.delayed(const Duration(seconds: 2), () {
      Get.to(()=> const LoginScreen(), transition: Transition.circularReveal, duration: const Duration(seconds: 3));
     });

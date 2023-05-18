@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       routes: AppRoutes.routes,
-      title: 'Ultrabicy',
+      title: 'FlutterStore',
       theme: AppTheme.ligthTheme,
       initialRoute: AppRoutes.initialRoute,
       onGenerateRoute: AppRoutes.onGenerateRoute,

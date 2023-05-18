@@ -81,6 +81,7 @@ Future<List<User>> getUsers() async {
       ),
     );
   }
+  print(querySnapshot.docs.length);
   return usersModel;
 }
 
