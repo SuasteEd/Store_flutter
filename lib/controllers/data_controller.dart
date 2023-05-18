@@ -11,15 +11,6 @@ class DataController extends GetxController {
   final sales = <Sale>[].obs;
   final users = <User>[].obs;
 
-  // @override
-  // void onInit() {
-  //   getAllProducts();
-  //   getAllPurchases();
-  //   getAllSales();
-  //   getAllUsers();
-  //   super.onInit();
-  // }
-
   Future<void> getAllProducts() async {
     products.clear();
     products.value = await getProducts();
@@ -30,6 +21,7 @@ class DataController extends GetxController {
   }
 
   Future<void> getAllSales() async {
+    sales.clear();
     sales.value = await getSales();
   }
 
@@ -38,22 +30,32 @@ class DataController extends GetxController {
   }
 
   Future<void> addProduct(Product product) async {
-    await addProduct(product);
+    await postProduct(product);
     await getAllProducts();
   }
 
   Future<void> addUser(User user) async {
-    await addUser(user);
+    await postUser(user);
     await getAllUsers();
   }
 
   Future<void> addPurchase(Purchase purchase) async {
-    await addPurchase(purchase);
+    await postPurchase(purchase);
     await getAllPurchases();
   }
 
   Future<void> addSale(Sale sale) async {
-    await addSale(sale);
+    await postSale(sale);
     await getAllSales();
+  }
+
+  Future<void> deleteProduct(String id) async {
+    await deleteProductById(id);
+    await getAllProducts();
+  }
+
+  Future<void> updateUser(User user) async {
+    await updateUserById(user);
+    await getAllUsers();
   }
 }

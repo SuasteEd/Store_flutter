@@ -35,6 +35,14 @@ List<Map<String, dynamic>> cartas = [
     'ruta': 'purchase',
     'color': Colors.blue[200],
   },
+  {
+    //'imagen': 'assets/svg/cart-shopping-solid.svg',
+    'imagen': 'assets/json/purchase.json',
+    'titulo': 'Data',
+    'texto': 'Make a purchase',
+    'ruta': 'users_list',
+    'color': Colors.blue[200],
+  },
 ];
 
 class _HomeScreenState extends State<HomeScreen> {

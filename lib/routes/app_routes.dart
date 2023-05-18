@@ -12,6 +12,7 @@ class AppRoutes {
     'purchase': (_) => PurchaseScreen(),
     'products': (_) => ProductsScreen(),
     'users': (_) => UsersScreen(),
+    'users_list': (_) => UsersList(),
   };
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {

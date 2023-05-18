@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:examen_2p/models/products_model.dart';
 import 'package:examen_2p/models/purchases_model.dart';
@@ -86,7 +84,7 @@ Future<List<User>> getUsers() async {
   return usersModel;
 }
 
-Future<void> addProduct(Product product) async {
+Future<void> postProduct(Product product) async {
   await collectionRef.add({
     'name': product.name,
     'description': product.description,
@@ -97,7 +95,7 @@ Future<void> addProduct(Product product) async {
   });
 }
 
-Future<void> addPurchase(Purchase purchase) async {
+Future<void> postPurchase(Purchase purchase) async {
   await firestore.collection('Purchases').add({
     'idA': purchase.idA,
     'pieces': purchase.pieces,
@@ -106,7 +104,7 @@ Future<void> addPurchase(Purchase purchase) async {
   });
 }
 
-Future<void> addSale(Sale sale) async {
+Future<void> postSale(Sale sale) async {
   await firestore.collection('Sales').add({
     'productId': sale.productId,
     'customerId': sale.costumerId,
@@ -119,7 +117,7 @@ Future<void> addSale(Sale sale) async {
   });
 }
 
-Future<void> addUser(User user) async {
+Future<void> postUser(User user) async {
   await firestore.collection('Users').add({
     'name': user.name,
     'lastName': user.lastName,
@@ -128,5 +126,57 @@ Future<void> addUser(User user) async {
     'gender': user.gender,
     'age': user.age,
     'role': user.role,
+  });
+}
+
+Future<void> deleteProductById(String id) async {
+  await firestore.collection('Products').doc(id).delete();
+}
+
+Future<void> deletePurchaseById(String id) async {
+  await firestore.collection('Purchases').doc(id).delete();
+}
+
+Future<void> deleteSaleById(String id) async {
+  await firestore.collection('Sales').doc(id).delete();
+}
+
+Future<void> deleteUserById(String id) async {
+  await firestore.collection('Users').doc(id).delete();
+}
+
+Future<void> updateUserById(User user) async {
+  await firestore.collection('User').doc(user.id).update({
+    'name': user.name,
+    'lastName': user.lastName,
+    'age': user.age,
+    'gender': user.gender,
+    'email': user.email,
+    'password': user.password,
+    'role': user.role
+  });
+}
+
+Future<void> updateSaleById(Sale sale) async {
+  await firestore.collection('Sales').doc(sale.id).update({
+    'productId': sale.productId, // 'productId' : 'id del producto'
+    'productName': sale.productName,
+    'amount': sale.amount,
+    'vendorId': sale.vendorId,
+    'customerId': sale.costumerId,
+    'pieces': sale.pieces,
+    'subtotal': sale.subtotal,
+    'total': sale.total
+  });
+}
+
+Future<void> updateProductById(Product product) async {
+  await firestore.collection('Products').doc(product.id).update({
+    'name': product.name,
+    'description': product.description,
+    'cost': product.cost,
+    'price': product.price,
+    'units': product.units,
+    'utility': product.utility,
   });
 }

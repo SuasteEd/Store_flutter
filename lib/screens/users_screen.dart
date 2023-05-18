@@ -3,10 +3,6 @@ import 'package:examen_2p/widgets/custom_button.dart';
 import 'package:examen_2p/widgets/custom_circle_avatar.dart';
 import 'package:examen_2p/widgets/loading_button.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
-import 'package:lottie/lottie.dart';
-import 'package:quickalert/quickalert.dart';
-
 import '../alerts/alert_successful.dart';
 import '../widgets/custom_text_form_field.dart';
 
@@ -43,7 +39,6 @@ class _UsersScreenState extends State<UsersScreen> {
               const SizedBox(height: 20),
               UserForm(
                   formKey: _formKey,
-                  id: _id,
                   name: _name,
                   lastName: _lastName,
                   age: _age,
@@ -78,11 +73,10 @@ class _UsersScreenState extends State<UsersScreen> {
   }
 }
 
-class UserForm extends StatelessWidget {
+class UserForm extends StatefulWidget {
   const UserForm({
     super.key,
     required GlobalKey<FormState> formKey,
-    required TextEditingController id,
     required TextEditingController name,
     required TextEditingController lastName,
     required TextEditingController age,
@@ -91,7 +85,6 @@ class UserForm extends StatelessWidget {
     required TextEditingController password,
     required TextEditingController role,
   })  : _formKey = formKey,
-        _id = id,
         _name = name,
         _lastName = lastName,
         _age = age,
@@ -101,7 +94,6 @@ class UserForm extends StatelessWidget {
         _role = role;
 
   final GlobalKey<FormState> _formKey;
-  final TextEditingController _id;
   final TextEditingController _name;
   final TextEditingController _lastName;
   final TextEditingController _age;
@@ -111,23 +103,23 @@ class UserForm extends StatelessWidget {
   final TextEditingController _role;
 
   @override
+  State<UserForm> createState() => _UserFormState();
+}
+
+class _UserFormState extends State<UserForm> {
+  List<String> genderOptions = ['Gender', 'Female', 'Male', 'Other'];
+  String selectedGender = 'Gender';
+  List<String> roleOptions = ['Role', 'Admin', 'User'];
+  String selectedRole = 'Role';
+  @override
   Widget build(BuildContext context) {
     return Form(
-      key: _formKey,
+      key: widget._formKey,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CustomTextFormField(
-            controller: _id,
-            labelText: "ID",
-            hintText: 'Enter your ID',
-            icon: Icons.vpn_key,
-            obscureText: false,
-            keyboardType: TextInputType.number,
-            validationMessage: 'Please enter an ID',
-          ),
-          CustomTextFormField(
-            controller: _name,
+            controller: widget._name,
             labelText: "Name",
             hintText: 'Enter your name',
             keyboardType: TextInputType.name,
@@ -136,7 +128,7 @@ class UserForm extends StatelessWidget {
             validationMessage: 'Please enter a name',
           ),
           CustomTextFormField(
-            controller: _lastName,
+            controller: widget._lastName,
             labelText: "Last Name",
             hintText: 'Enter your last name',
             keyboardType: TextInputType.name,
@@ -145,7 +137,7 @@ class UserForm extends StatelessWidget {
             validationMessage: 'Please enter a last name',
           ),
           CustomTextFormField(
-            controller: _age,
+            controller: widget._age,
             labelText: "Age",
             hintText: 'Enter your age',
             obscureText: false,
@@ -153,17 +145,46 @@ class UserForm extends StatelessWidget {
             keyboardType: TextInputType.number,
             validationMessage: 'Please enter your age',
           ),
-          CustomTextFormField(
-            controller: _gender,
-            labelText: "Gender",
-            hintText: 'Insert your gender',
-            keyboardType: TextInputType.name,
-            obscureText: false,
-            icon: Icons.person_outline_rounded,
-            validationMessage: 'Please enter your gender',
+          Container(
+            width: double.infinity,
+            margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            height: 55,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border.all(color: Colors.black),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: DropdownButton(
+              value: selectedGender, // valor seleccionado
+              underline: Container(),
+              isExpanded: true,
+              // hint: const Text(
+              //     'Selecciona tu género'), // texto que se muestra antes de seleccionar
+              onChanged: (String? newValue) {
+                // cuando el usuario seleccione una opción, se actualiza el valor seleccionado
+                setState(() {
+                  selectedGender = newValue!;
+                  widget._role.text = selectedGender;
+                });
+              },
+              items:
+                  genderOptions.map<DropdownMenuItem<String>>((String value) {
+                // crea los elementos de la lista de opciones del DropDownButton
+                return DropdownMenuItem<String>(
+                    value: value,
+                    child: Row(
+                      children: [
+                        const Icon(Icons.person),
+                        const SizedBox(width: 10),
+                        Text(value),
+                      ],
+                    ));
+              }).toList(),
+            ),
           ),
           CustomTextFormField(
-            controller: _email,
+            controller: widget._email,
             labelText: "Email",
             hintText: 'Enter your email',
             icon: Icons.email,
@@ -172,7 +193,7 @@ class UserForm extends StatelessWidget {
             validationMessage: 'Please enter a valid email',
           ),
           CustomTextFormField(
-            controller: _password,
+            controller: widget._password,
             labelText: "Password",
             hintText: 'Enter your password',
             icon: Icons.lock,
@@ -180,14 +201,43 @@ class UserForm extends StatelessWidget {
             keyboardType: TextInputType.visiblePassword,
             validationMessage: 'Please enter a password',
           ),
-          CustomTextFormField(
-            controller: _role,
-            labelText: "Role",
-            hintText: 'Enter your role',
-            keyboardType: TextInputType.name,
-            obscureText: false,
-            icon: Icons.admin_panel_settings_rounded,
-            validationMessage: 'Please enter your role',
+          Container(
+            width: double.infinity,
+            margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            height: 55,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border.all(color: Colors.black),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: DropdownButton(
+              value: selectedRole, // valor seleccionado
+              underline: Container(),
+              isExpanded: true,
+              // hint: const Text(
+              //     'Selecciona tu género'), // texto que se muestra antes de seleccionar
+              onChanged: (String? newValue) {
+                // cuando el usuario seleccione una opción, se actualiza el valor seleccionado
+                setState(() {
+                  selectedRole = newValue!;
+                  widget._role.text = selectedRole;
+                });
+              },
+              items:
+                  roleOptions.map<DropdownMenuItem<String>>((String value) {
+                // crea los elementos de la lista de opciones del DropDownButton
+                return DropdownMenuItem<String>(
+                    value: value,
+                    child: Row(
+                      children: [
+                        const Icon(Icons.admin_panel_settings_rounded),
+                        const SizedBox(width: 10),
+                        Text(value),
+                      ],
+                    ));
+              }).toList(),
+            ),
           ),
         ],
       ),
