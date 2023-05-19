@@ -58,10 +58,9 @@ class _UsersListState extends State<UsersList> {
                         subtitle: Text(_controller.users[index].email),
                         trailing: IconButton(
                           onPressed: () {
-                            //_controller.deleteUser(_controller.users[index].id);
-                            
+                            Navigator.of(context).pushNamed('users');
                           },
-                          icon: const Icon(Icons.delete),
+                          icon: const Icon(Icons.edit),
                         ),
                         onTap: () => showDialog(
                             context: context,

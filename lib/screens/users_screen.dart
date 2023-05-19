@@ -1,3 +1,4 @@
+import 'package:examen_2p/models/users_model.dart';
 import 'package:examen_2p/theme/app_theme.dart';
 import 'package:examen_2p/widgets/custom_button.dart';
 import 'package:examen_2p/widgets/custom_circle_avatar.dart';
@@ -26,6 +27,7 @@ class _UsersScreenState extends State<UsersScreen> {
   bool _isPressed = false;
   @override
   Widget build(BuildContext context) {
+    final User args = ModalRoute.of(context)?.settings.arguments as User;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Users Screen'),
@@ -224,8 +226,7 @@ class _UserFormState extends State<UserForm> {
                   widget._role.text = selectedRole;
                 });
               },
-              items:
-                  roleOptions.map<DropdownMenuItem<String>>((String value) {
+              items: roleOptions.map<DropdownMenuItem<String>>((String value) {
                 // crea los elementos de la lista de opciones del DropDownButton
                 return DropdownMenuItem<String>(
                     value: value,
