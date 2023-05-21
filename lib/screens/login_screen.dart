@@ -47,7 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
               CustomButton(
                 text: _isPressed
                     ? const LoadingButton()
-                    : const Text('Sing in', style: AppTheme.textButton),
+                    : const Text('Sign in', style: AppTheme.textButton),
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     setState(() {

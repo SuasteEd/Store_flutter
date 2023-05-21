@@ -12,7 +12,6 @@ class HomeScreen extends StatefulWidget {
 
 List<Map<String, dynamic>> cartas = [
   {
-    //'imagen': 'assets/svg/pen-to-square-solid.svg',
     'imagen': 'assets/json/register.json',
     'titulo': 'Register',
     'texto': 'Register users/products',
@@ -20,7 +19,6 @@ List<Map<String, dynamic>> cartas = [
     'color': Colors.red[200],
   },
   {
-    //'imagen': 'assets/svg/money-bill-solid.svg',
     'imagen': 'assets/json/sale.json',
     'titulo': 'Sales',
     'texto': 'Make a sale',
@@ -28,7 +26,6 @@ List<Map<String, dynamic>> cartas = [
     'color': Colors.green[200],
   },
   {
-    //'imagen': 'assets/svg/cart-shopping-solid.svg',
     'imagen': 'assets/json/purchase.json',
     'titulo': 'Purchase',
     'texto': 'Make a purchase',
@@ -36,11 +33,10 @@ List<Map<String, dynamic>> cartas = [
     'color': Colors.blue[200],
   },
   {
-    //'imagen': 'assets/svg/cart-shopping-solid.svg',
     'imagen': 'assets/json/purchase.json',
     'titulo': 'Data',
     'texto': 'Make a purchase',
-    'ruta': 'users_list',
+    'ruta': '',
     'color': Colors.blue[200],
   },
 ];
@@ -63,9 +59,19 @@ class _HomeScreenState extends State<HomeScreen> {
             return InkWell(
               onTap: () {
                 carta['ruta'] == ''
-                    ? showDialog(
-                        context: context,
-                        builder: (context) => AlertRegister(carta: carta))
+                    ? carta['titulo'] == 'Data'
+                        ? showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDetails(carta: carta);
+                            },
+                          )
+                        : showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertRegister(carta: carta);
+                            },
+                          )
                     : Navigator.of(context).pushNamed(carta['ruta']);
               },
               child: FadeInUp(
@@ -196,6 +202,128 @@ class AlertRegister extends StatelessWidget {
                 ),
                 onTap: () {
                   Navigator.of(context).pushNamed('products');
+                },
+                trailing: const Icon(Icons.app_registration),
+              ),
+            ],
+          )),
+    );
+  }
+}
+
+class AlertDetails extends StatelessWidget {
+  const AlertDetails({
+    super.key,
+    required this.carta,
+  });
+
+  final Map<String, dynamic> carta;
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Container(
+          height: 450,
+          width: 200,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: Colors.black,
+            ),
+            color: Colors.white,
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Hero(
+                tag: 'Register',
+                child: Lottie.asset(
+                  'assets/json/register.json',
+                  height: 100,
+                ),
+              ),
+              const Text(
+                'View a list of',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              ListTile(
+                leading: CircleAvatar(
+                  radius: 25,
+                  backgroundColor: AppTheme.secondary,
+                  child: Hero(
+                    tag: 'user',
+                    child: Lottie.asset('assets/json/user.json'),
+                  ),
+                ),
+                title: const Text(
+                  'Users',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                onTap: () {
+                  Navigator.of(context).pushNamed('users_list');
+                },
+                trailing: const Icon(Icons.app_registration),
+              ),
+              const Divider(),
+              ListTile(
+                leading: CircleAvatar(
+                  radius: 25,
+                  backgroundColor: AppTheme.secondary,
+                  child: Hero(
+                    tag: 'product',
+                    child: Lottie.asset('assets/json/products.json'),
+                  ),
+                ),
+                title: const Text(
+                  'Products',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                onTap: () {
+                  Navigator.of(context).pushNamed('products_list');
+                },
+                trailing: const Icon(Icons.app_registration),
+              ),
+              const Divider(),
+              ListTile(
+                leading: CircleAvatar(
+                  radius: 25,
+                  backgroundColor: AppTheme.secondary,
+                  child: Hero(
+                    tag: 'product',
+                    child: Lottie.asset('assets/json/products.json'),
+                  ),
+                ),
+                title: const Text(
+                  'Sales',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                onTap: () {
+                  Navigator.of(context).pushNamed('sales_list');
+                },
+                trailing: const Icon(Icons.app_registration),
+              ),
+              const Divider(),
+              ListTile(
+                leading: CircleAvatar(
+                  radius: 25,
+                  backgroundColor: AppTheme.secondary,
+                  child: Hero(
+                    tag: 'product',
+                    child: Lottie.asset('assets/json/products.json'),
+                  ),
+                ),
+                title: const Text(
+                  'Purchases',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                onTap: () {
+                  Navigator.of(context).pushNamed('purchase_list');
                 },
                 trailing: const Icon(Icons.app_registration),
               ),

@@ -1,3 +1,6 @@
+export 'package:examen_2p/screens/purchase_list.dart';
+export 'package:examen_2p/screens/sales_list.dart';
+export '../screens/products_list.dart';
 export '../screens/users_list.dart';
 export '../screens/products_screen.dart';
 export '../screens/purchase_screen.dart';

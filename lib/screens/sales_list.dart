@@ -1,33 +1,28 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:examen_2p/alerts/alert_error.dart';
-import 'package:examen_2p/alerts/alert_successful.dart';
-import 'package:examen_2p/controllers/data_controller.dart';
-import 'package:examen_2p/services/firebase_services.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 
-class UsersList extends StatefulWidget {
-  const UsersList({Key? key}) : super(key: key);
+import '../controllers/data_controller.dart';
+import '../services/firebase_services.dart';
+
+class SalesList extends StatefulWidget {
+  const SalesList({ Key? key }) : super(key: key);
 
   @override
-  _UsersListState createState() => _UsersListState();
+  _SalesListState createState() => _SalesListState();
 }
 
-class _UsersListState extends State<UsersList> {
+class _SalesListState extends State<SalesList> {
   final _controller = Get.put(DataController());
   final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
-  int initialItemCount = 0;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Users List'),
+        title: const Text('Sales List'),
       ),
       body: StreamBuilder(
-          stream: FireBaseResponse().getUsers(),
+          stream: FireBaseResponse().getSales(),
           builder: (context, snapshot) {
             final data = snapshot.data?.docs;
             if (!snapshot.hasData) {
@@ -50,12 +45,12 @@ class _UsersListState extends State<UsersList> {
                           children: [
                             SlidableAction(
                               onPressed: (context) async {
-                                final id = _controller.users[index].id;
+                                final id = _controller.sales[index].id;
                                 _listKey.currentState!.removeItem(
                                   index,
                                   (context, animation) => Container(),
                                 );
-                                await _controller.deleteUser(id!);
+                                await _controller.deleteSale(id!);
                               },
                               backgroundColor: Colors.red,
                               foregroundColor: Colors.white,
@@ -65,14 +60,13 @@ class _UsersListState extends State<UsersList> {
                         ),
                         child: Card(
                           child: ListTile(
-                            title: Text(
-                                '${data[index]['name']} ${data[index]['lastName']}'),
-                            subtitle: Text('${data[index]['role']}'),
+                            title: Text('${data[index]['productName']}'),
+                            subtitle: Text(_controller.users.firstWhere((e) => e.id == data[index]['vendorId']).name),
                             trailing: IconButton(
                                 icon: const Icon(Icons.edit),
                                 onPressed: () {
-                                  Navigator.of(context).pushNamed('users',
-                                      arguments: _controller.users.firstWhere(
+                                  Navigator.of(context).pushNamed('sales',
+                                      arguments: _controller.sales.firstWhere(
                                           (element) =>
                                               element.id == data[index].id));
                                 }),
@@ -87,18 +81,23 @@ class _UsersListState extends State<UsersList> {
                                               MainAxisAlignment.center,
                                           children: [
                                             const Text(
-                                              'User Info',
+                                              'Sales Info',
                                               style: TextStyle(
                                                   fontSize: 20,
                                                   fontWeight: FontWeight.bold),
                                             ),
                                             Text(
-                                                'Name: ${data[index]['name']} ${data[index]['lastName']}'),
-                                            Text('Age: ${data[index]['age']}'),
-                                            Text('Role: ${data[index]['role']}'),
-                                            Text('Email: ${data[index]['email']}'),
-                                            Text('Password: ${data[index]['password']}'),
-                                            Text('Gender: ${data[index]['gender']}'),
+                                                'Product Name: ${data[index]['productName']}'),
+                                             Text('Vendor name: ${_controller.users.firstWhere((e) => e.id == data[index]['vendorId']).name}'),
+                                            // Text('Age: ${data[index]['age']}'),
+                                            Text('Price: \$${data[index]['subtotal']}'),
+                                            Text('Total:  \$${data[index]['total']}'),
+                                            Text('Amount: ${data[index]['amount']}'),
+                                            Text('Pieces: ${data[index]['pieces']}'),
+                                            // Text('Role: ${data[index]['role']}'),
+                                            // Text('Email: ${data[index]['email']}'),
+                                            // Text('Password: ${data[index]['password']}'),
+                                            // Text('Gender: ${data[index]['gender']}'),
                                           ],
                                         ),
                                       )));

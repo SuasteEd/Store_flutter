@@ -1,5 +1,5 @@
 class Product {
-  String id;
+  String? id;
   String name;
   String description;
   double cost;
@@ -8,7 +8,7 @@ class Product {
   double utility;
 
   Product({
-    required this.id,
+    this.id,
     required this.name,
     required this.description,
     required this.cost,
@@ -16,4 +16,30 @@ class Product {
     required this.units,
     required this.utility
   });
+
+  
+
+  factory Product.fromMap(Map<String, dynamic> map) {
+    return Product(
+      id: map['id'],
+      name: map['name'],
+      description: map['description'],
+      cost: map['cost'],
+      price: map['price'],
+      units: map['units'],
+      utility: map['utility'],
+    );
+  }
+
+  factory Product.fromJson(Map<String, dynamic> json) {
+    return Product(
+      id: json['id'],
+      name: json['name'],
+      description: json['description'],
+      cost: json['cost'],
+      price: json['price'],
+      units: json['units'],
+      utility: json['utility'],
+    );
+  }
 }

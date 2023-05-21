@@ -1,7 +1,7 @@
 class User {
   String name;
   String lastName;
-  String id;
+  String? id;
   int age;
   String gender;
   String email;
@@ -11,7 +11,7 @@ class User {
   User({
     required this.name,
     required this.lastName,
-    required this.id,
+    this.id,
     required this.age,
     required this.gender,
     required this.email,

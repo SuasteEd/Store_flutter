@@ -11,7 +11,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  DataController().onInit();
+  // DataController().onInit();
   runApp(const MyApp());
 }
 

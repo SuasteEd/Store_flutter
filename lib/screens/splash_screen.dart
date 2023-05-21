@@ -14,7 +14,7 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  final controller = Get.put(DataController());
+   final controller = Get.put(DataController());
   @override
   void initState() {
     fillData();
@@ -22,8 +22,11 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> fillData() async {
-    await controller.getAllProducts();
     await controller.getAllUsers();
+    await controller.getAllProducts();
+    await controller.getAllSales();
+    await controller.getAllPurchases();
+    
     Future.delayed(const Duration(seconds: 2), () {
      Get.to(()=> const LoginScreen(), transition: Transition.circularReveal, duration: const Duration(seconds: 3));
     });

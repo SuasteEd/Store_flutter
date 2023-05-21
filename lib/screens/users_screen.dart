@@ -1,10 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:examen_2p/alerts/alert_error.dart';
 import 'package:examen_2p/models/users_model.dart';
 import 'package:examen_2p/theme/app_theme.dart';
 import 'package:examen_2p/widgets/custom_button.dart';
 import 'package:examen_2p/widgets/custom_circle_avatar.dart';
 import 'package:examen_2p/widgets/loading_button.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import '../alerts/alert_successful.dart';
+import '../controllers/data_controller.dart';
 import '../widgets/custom_text_form_field.dart';
 
 class UsersScreen extends StatefulWidget {
@@ -15,7 +19,6 @@ class UsersScreen extends StatefulWidget {
 }
 
 class _UsersScreenState extends State<UsersScreen> {
-  final _id = TextEditingController();
   final _name = TextEditingController();
   final _lastName = TextEditingController();
   final _age = TextEditingController();
@@ -25,9 +28,19 @@ class _UsersScreenState extends State<UsersScreen> {
   final _role = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool _isPressed = false;
+  final _controller = Get.put(DataController());
   @override
   Widget build(BuildContext context) {
-    final User args = ModalRoute.of(context)?.settings.arguments as User;
+    final User? args = ModalRoute.of(context)?.settings.arguments as User?;
+    if (args != null) {
+      _name.text = args.name;
+      _lastName.text = args.lastName;
+      _age.text = args.age.toString();
+      _gender.text = args.gender.toString();
+      _email.text = args.email;
+      _password.text = args.password;
+      _role.text = args.role;
+    }
     return Scaffold(
       appBar: AppBar(
         title: const Text('Users Screen'),
@@ -40,6 +53,8 @@ class _UsersScreenState extends State<UsersScreen> {
                   tag: 'user', json: 'assets/json/user.json'),
               const SizedBox(height: 20),
               UserForm(
+                  genderFromList: args?.gender,
+                  roleFromList: args?.role,
                   formKey: _formKey,
                   name: _name,
                   lastName: _lastName,
@@ -51,19 +66,47 @@ class _UsersScreenState extends State<UsersScreen> {
               CustomButton(
                 text: _isPressed
                     ? const LoadingButton()
-                    : const Text(
-                        'Save',
+                    : Text(
+                        args == null ? 'Save' : 'Update',
                         style: AppTheme.textButton,
                       ),
-                onPressed: () {
+                onPressed: () async {
                   if (_formKey.currentState!.validate()) {
                     _isPressed = true;
-                    setState(() {});
-                    Future.delayed(const Duration(seconds: 1), () {
-                      _isPressed = false;
-                      setState(() {});
-                    });
-                    alertSucces(context, 'User saved successfully!');
+                    final user = User(
+                        id: args?.id,
+                        name: _name.text,
+                        lastName: _lastName.text,
+                        age: int.parse(_age.text),
+                        gender: _gender.text,
+                        email: _email.text,
+                        password: _password.text,
+                        role: _role.text);
+                    if (args == null) {
+                      if (await _controller.addUser(user)) {
+                        _isPressed = false;
+                        setState(() {});
+                        // ignore: use_build_context_synchronously
+                        alertSucces(context, 'User saved successfully!');
+                      } else {
+                        _isPressed = false;
+                        setState(() {});
+                        // ignore: use_build_context_synchronously
+                        alertError(context, 'Error saving user!');
+                      }
+                    } else {
+                      if (await _controller.updateUser(user)) {
+                        _isPressed = false;
+                        setState(() {});
+                        // ignore: use_build_context_synchronously
+                        alertSucces(context, 'User updated successfully!');
+                      } else {
+                        _isPressed = false;
+                        setState(() {});
+                        // ignore: use_build_context_synchronously
+                        alertError(context, 'Error updating user!');
+                      }
+                    }
                   }
                 },
               ),
@@ -86,6 +129,8 @@ class UserForm extends StatefulWidget {
     required TextEditingController email,
     required TextEditingController password,
     required TextEditingController role,
+    this.genderFromList,
+    this.roleFromList,
   })  : _formKey = formKey,
         _name = name,
         _lastName = lastName,
@@ -103,15 +148,16 @@ class UserForm extends StatefulWidget {
   final TextEditingController _email;
   final TextEditingController _password;
   final TextEditingController _role;
+  final String? genderFromList;
+  final String? roleFromList;
 
   @override
   State<UserForm> createState() => _UserFormState();
 }
 
 class _UserFormState extends State<UserForm> {
-  List<String> genderOptions = ['Gender', 'Female', 'Male', 'Other'];
-  String selectedGender = 'Gender';
-  List<String> roleOptions = ['Role', 'Admin', 'User'];
+  List<String> genderOptions = ['Female', 'Male', 'Other'];
+  List<String> roleOptions = ['Admin', 'Vendor', 'Customer'];
   String selectedRole = 'Role';
   @override
   Widget build(BuildContext context) {
@@ -157,27 +203,29 @@ class _UserFormState extends State<UserForm> {
               border: Border.all(color: Colors.black),
               borderRadius: BorderRadius.circular(20),
             ),
-            child: DropdownButton(
-              value: selectedGender, // valor seleccionado
-              underline: Container(),
+            child: DropdownButtonFormField(
+              value: widget.genderFromList,
+              hint: const Text('Gender', style: TextStyle(color: Colors.black)),
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                contentPadding: EdgeInsets.zero,
+                icon: Icon(
+                  Icons.person,
+                  color: Colors.black,
+                ),
+              ),
               isExpanded: true,
-              // hint: const Text(
-              //     'Selecciona tu género'), // texto que se muestra antes de seleccionar
-              onChanged: (String? newValue) {
-                // cuando el usuario seleccione una opción, se actualiza el valor seleccionado
+              onChanged: (value) {
                 setState(() {
-                  selectedGender = newValue!;
-                  widget._role.text = selectedGender;
+                  widget._gender.text = value!;
                 });
               },
               items:
                   genderOptions.map<DropdownMenuItem<String>>((String value) {
-                // crea los elementos de la lista de opciones del DropDownButton
                 return DropdownMenuItem<String>(
                     value: value,
                     child: Row(
                       children: [
-                        const Icon(Icons.person),
                         const SizedBox(width: 10),
                         Text(value),
                       ],
@@ -213,26 +261,28 @@ class _UserFormState extends State<UserForm> {
               border: Border.all(color: Colors.black),
               borderRadius: BorderRadius.circular(20),
             ),
-            child: DropdownButton(
-              value: selectedRole, // valor seleccionado
-              underline: Container(),
+            child: DropdownButtonFormField(
+              value: widget.roleFromList,
+              hint: const Text('Role', style: TextStyle(color: Colors.black)),
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                contentPadding: EdgeInsets.zero,
+                icon: Icon(
+                  Icons.person_pin,
+                  color: Colors.black,
+                ),
+              ),
               isExpanded: true,
-              // hint: const Text(
-              //     'Selecciona tu género'), // texto que se muestra antes de seleccionar
-              onChanged: (String? newValue) {
-                // cuando el usuario seleccione una opción, se actualiza el valor seleccionado
+              onChanged: (value) {
                 setState(() {
-                  selectedRole = newValue!;
-                  widget._role.text = selectedRole;
+                  widget._role.text = value!;
                 });
               },
               items: roleOptions.map<DropdownMenuItem<String>>((String value) {
-                // crea los elementos de la lista de opciones del DropDownButton
                 return DropdownMenuItem<String>(
                     value: value,
                     child: Row(
                       children: [
-                        const Icon(Icons.admin_panel_settings_rounded),
                         const SizedBox(width: 10),
                         Text(value),
                       ],

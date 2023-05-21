@@ -1,9 +1,13 @@
+import 'package:examen_2p/alerts/alert_error.dart';
 import 'package:examen_2p/widgets/custom_button.dart';
 import 'package:examen_2p/widgets/loading_button.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
 import '../alerts/alert_successful.dart';
+import '../controllers/data_controller.dart';
+import '../models/products_model.dart';
 import '../widgets/custom_circle_avatar.dart';
 import '../widgets/custom_text_form_field.dart';
 
@@ -23,6 +27,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
   final _price = TextEditingController();
   final _utility = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  final _controller = Get.put(DataController());
   bool _isPressed = false;
   @override
   Widget build(BuildContext context) {
@@ -39,7 +44,6 @@ class _ProductsScreenState extends State<ProductsScreen> {
               const SizedBox(height: 20),
               ProductForm(
                   formKey: _formKey,
-                  id: _id,
                   name: _name,
                   description: _description,
                   units: _units,
@@ -57,15 +61,25 @@ class _ProductsScreenState extends State<ProductsScreen> {
                               fontSize: 20,
                               fontFamily: 'Poppins'),
                         ),
-                  onPressed: () {
+                  onPressed: () async {
                     if (_formKey.currentState!.validate()) {
                       _isPressed = true;
                       setState(() {});
-                      Future.delayed(const Duration(seconds: 1), () {
-                        _isPressed = false;
-                        setState(() {});
+                      final product = Product(
+                          name: _name.text,
+                          description: _description.text,
+                          units: double.parse(_units.text),
+                          cost:double.parse(_cost.text),
+                          price: double.parse(_price.text),
+                          utility: double.parse(_utility.text));
+                     if(await _controller.addProduct(product)) {
+                      alertSucces(context, 'Product saved successfully!');
+                      _isPressed = false;
+                      setState(() {
                       });
-                      alertSucces(context, 'User saved successfully!');
+                     } else {
+                      alertError(context, 'Error saving product!');
+                     }
                     }
                   })
             ],
@@ -80,7 +94,6 @@ class ProductForm extends StatelessWidget {
   const ProductForm({
     super.key,
     required GlobalKey<FormState> formKey,
-    required TextEditingController id,
     required TextEditingController name,
     required TextEditingController description,
     required TextEditingController units,
@@ -88,7 +101,6 @@ class ProductForm extends StatelessWidget {
     required TextEditingController price,
     required TextEditingController utility,
   })  : _formKey = formKey,
-        _id = id,
         _name = name,
         _description = description,
         _units = units,
@@ -97,7 +109,6 @@ class ProductForm extends StatelessWidget {
         _utility = utility;
 
   final GlobalKey<FormState> _formKey;
-  final TextEditingController _id;
   final TextEditingController _name;
   final TextEditingController _description;
   final TextEditingController _units;
@@ -112,15 +123,6 @@ class ProductForm extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CustomTextFormField(
-            controller: _id,
-            labelText: "ID",
-            hintText: 'Enter your ID',
-            icon: Icons.vpn_key,
-            keyboardType: TextInputType.number,
-            validationMessage: 'Please enter an ID',
-            obscureText: false,
-          ),
           CustomTextFormField(
             controller: _name,
             labelText: "Name",

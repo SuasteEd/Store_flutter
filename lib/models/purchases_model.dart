@@ -1,5 +1,5 @@
 class Purchase {
-  String id;
+  String? id;
   String idA;
   double pieces;
   String productId;
@@ -7,8 +7,8 @@ class Purchase {
 
   Purchase(
       {
-      required this.id,
-        required this.idA,
+      this.id,
+      required this.idA,
       required this.pieces,
       required this.productId,
       required this.productName});

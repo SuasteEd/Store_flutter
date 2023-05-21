@@ -1,33 +1,29 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:examen_2p/alerts/alert_error.dart';
-import 'package:examen_2p/alerts/alert_successful.dart';
-import 'package:examen_2p/controllers/data_controller.dart';
-import 'package:examen_2p/services/firebase_services.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 
-class UsersList extends StatefulWidget {
-  const UsersList({Key? key}) : super(key: key);
+import '../controllers/data_controller.dart';
+import '../services/firebase_services.dart';
+
+class PurchaseList extends StatefulWidget {
+  const PurchaseList({Key? key}) : super(key: key);
 
   @override
-  _UsersListState createState() => _UsersListState();
+  _PurchaseListState createState() => _PurchaseListState();
 }
 
-class _UsersListState extends State<UsersList> {
+class _PurchaseListState extends State<PurchaseList> {
   final _controller = Get.put(DataController());
   final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
-  int initialItemCount = 0;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Users List'),
+        title: const Text('Purchase List'),
       ),
       body: StreamBuilder(
-          stream: FireBaseResponse().getUsers(),
+          stream: FireBaseResponse().getPurchases(),
           builder: (context, snapshot) {
             final data = snapshot.data?.docs;
             if (!snapshot.hasData) {
@@ -44,18 +40,20 @@ class _UsersListState extends State<UsersList> {
                     key: _listKey,
                     initialItemCount: data!.length,
                     itemBuilder: (context, index, animation) {
+                      final name = _controller.users.firstWhere(
+                          (element) => element.id == data[index]['idA']);
                       return Slidable(
                         startActionPane: ActionPane(
                           motion: const ScrollMotion(),
                           children: [
                             SlidableAction(
                               onPressed: (context) async {
-                                final id = _controller.users[index].id;
+                                final id = _controller.purchases[index].id;
                                 _listKey.currentState!.removeItem(
                                   index,
                                   (context, animation) => Container(),
                                 );
-                                await _controller.deleteUser(id!);
+                                await _controller.deletePurchase(id!);
                               },
                               backgroundColor: Colors.red,
                               foregroundColor: Colors.white,
@@ -65,15 +63,17 @@ class _UsersListState extends State<UsersList> {
                         ),
                         child: Card(
                           child: ListTile(
-                            title: Text(
-                                '${data[index]['name']} ${data[index]['lastName']}'),
-                            subtitle: Text('${data[index]['role']}'),
+                            title: Text('${name.name} ${name.lastName}'),
+                            subtitle: Text(_controller.products
+                                .firstWhere(
+                                    (e) => e.id == data[index]['productId'])
+                                .name),
                             trailing: IconButton(
                                 icon: const Icon(Icons.edit),
                                 onPressed: () {
-                                  Navigator.of(context).pushNamed('users',
-                                      arguments: _controller.users.firstWhere(
-                                          (element) =>
+                                  Navigator.of(context).pushNamed('purchase',
+                                      arguments: _controller.purchases
+                                          .firstWhere((element) =>
                                               element.id == data[index].id));
                                 }),
                             onTap: () {
@@ -87,18 +87,20 @@ class _UsersListState extends State<UsersList> {
                                               MainAxisAlignment.center,
                                           children: [
                                             const Text(
-                                              'User Info',
+                                              'Purchase Info',
                                               style: TextStyle(
                                                   fontSize: 20,
                                                   fontWeight: FontWeight.bold),
                                             ),
+                                            Text('IDA: ${data[index]['idA']}'),
                                             Text(
-                                                'Name: ${data[index]['name']} ${data[index]['lastName']}'),
-                                            Text('Age: ${data[index]['age']}'),
-                                            Text('Role: ${data[index]['role']}'),
-                                            Text('Email: ${data[index]['email']}'),
-                                            Text('Password: ${data[index]['password']}'),
-                                            Text('Gender: ${data[index]['gender']}'),
+                                                'Vendor name: ${_controller.users.firstWhere((e) => e.id == data[index]['idA']).name}'),
+                                            Text(
+                                                'ProductID : ${data[index]['productId']}'),
+                                            Text(
+                                                'ProductName: ${data[index]['productName']}'),
+                                            Text(
+                                                'Pieces: ${data[index]['pieces']}'),
                                           ],
                                         ),
                                       )));

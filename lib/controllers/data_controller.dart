@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:examen_2p/models/products_model.dart';
 import 'package:examen_2p/models/purchases_model.dart';
 import 'package:examen_2p/models/sales_model.dart';
@@ -10,52 +12,173 @@ class DataController extends GetxController {
   final purchases = <Purchase>[].obs;
   final sales = <Sale>[].obs;
   final users = <User>[].obs;
+  // Future<void> getAllPurchases() async {
+  //   purchases.value = await getPurchases();
+  // }
 
   Future<void> getAllProducts() async {
     products.clear();
-    products.value = await getProducts();
+    products.value = await FireBaseResponse().getAllProducts();
   }
 
-  Future<void> getAllPurchases() async {
-    purchases.value = await getPurchases();
+  Future<void> getAllUsers() async {
+    users.clear();
+    users.value = await FireBaseResponse().getAllUsers();
   }
 
   Future<void> getAllSales() async {
     sales.clear();
-    sales.value = await getSales();
+    sales.value = await FireBaseResponse().getAllSales();
+  }
+  
+  Future<void> getAllPurchases() async {
+    purchases.clear();
+    purchases.value = await FireBaseResponse().getAllPurchases();
   }
 
-  Future<void> getAllUsers() async {
-    users.value = await getUsers();
+
+
+
+
+  Future<bool> addProduct(Product product) async {
+    try {
+      FireBaseResponse().postProduct(product);
+      await getAllProducts();
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
-  Future<void> addProduct(Product product) async {
-    await postProduct(product);
+  Future<bool> addUser(User user) async {
+    try {
+      await FireBaseResponse().postUser(user);
+      await getAllUsers();
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> addPurchase(Purchase purchase) async {
+    try {
+      FireBaseResponse().postPurchase(purchase);
+      await getAllPurchases();
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> addSale(Sale sale) async {
+    try {
+      FireBaseResponse().postSale(sale);
+      await getAllSales();
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+
+
+
+  // Future<void> deleteProduct(String id) async {
+  //   await deleteProductById(id);
+  //   await getAllProducts();
+  // }
+
+  Future<void> updateQuantityProduct(Product product) async {
+    await FireBaseResponse().updateQuantityProduct(product);
     await getAllProducts();
   }
 
-  Future<void> addUser(User user) async {
-    await postUser(user);
-    await getAllUsers();
+  Future<bool> updateUser(User user) async {
+    try {
+      await FireBaseResponse().updateUserById(user);
+      await getAllUsers();
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
+    }
   }
 
-  Future<void> addPurchase(Purchase purchase) async {
-    await postPurchase(purchase);
-    await getAllPurchases();
+  Future<bool> updateProduct(Product product) async {
+    try {
+      await FireBaseResponse().updateProductById(product);
+      await getAllProducts();
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
+    }
   }
 
-  Future<void> addSale(Sale sale) async {
-    await postSale(sale);
-    await getAllSales();
+  Future<bool> updatePurchase(Purchase purchase) async {
+    try {
+      await FireBaseResponse().updatePurchaseById(purchase);
+      await getAllPurchases();
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
+    }
   }
 
-  Future<void> deleteProduct(String id) async {
-    await deleteProductById(id);
-    await getAllProducts();
+    Future<bool> updateSale(Sale sale) async {
+    try {
+      await FireBaseResponse().updateSaleById(sale);
+      await getAllPurchases();
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
+    }
   }
 
-  Future<void> updateUser(User user) async {
-    await updateUserById(user);
-    await getAllUsers();
+
+  Future<bool> deleteProduct(String id) async {
+    try {
+      await FireBaseResponse().deleteProductById(id); 
+      await getAllProducts();
+      return true;
+    } catch (e) {
+      print(e); 
+      return false;
+    }
+  }
+
+  Future<bool> deleteUser(String id) async {
+    try {
+      await FireBaseResponse().deleteUserById(id); 
+      await getAllUsers();
+      return true;
+    } catch (e) {
+      print(e); 
+      return false;
+    }
+  }
+
+  Future<bool> deleteSale(String id) async {
+    try {
+      await FireBaseResponse().deleteSaleById(id); 
+      await getAllUsers();
+      return true;
+    } catch (e) {
+      print(e); 
+      return false;
+    }
+  }
+
+  Future<bool> deletePurchase(String id) async {
+    try {
+      await FireBaseResponse().deletePurchaseById(id); 
+      await getAllUsers();
+      return true;
+    } catch (e) {
+      print(e); 
+      return false;
+    }
   }
 }
