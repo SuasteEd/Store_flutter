@@ -16,6 +16,7 @@ class AppRoutes {
     'products_list': (_) => ProductsList(),
     'sales_list': (_) => SalesList(),
     'purchase_list': (_) => PurchaseList(),
+    'products_list': (_) => ProductsList(),
   };
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {

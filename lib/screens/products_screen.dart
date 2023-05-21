@@ -8,6 +8,7 @@ import 'package:quickalert/widgets/quickalert_dialog.dart';
 import '../alerts/alert_successful.dart';
 import '../controllers/data_controller.dart';
 import '../models/products_model.dart';
+import '../theme/app_theme.dart';
 import '../widgets/custom_circle_avatar.dart';
 import '../widgets/custom_text_form_field.dart';
 
@@ -29,8 +30,19 @@ class _ProductsScreenState extends State<ProductsScreen> {
   final _formKey = GlobalKey<FormState>();
   final _controller = Get.put(DataController());
   bool _isPressed = false;
+
   @override
   Widget build(BuildContext context) {
+    final Product? args =
+        ModalRoute.of(context)?.settings.arguments as Product?;
+    if (args != null) {
+      _name.text = args.name;
+      _description.text = args.description;
+      _units.text = args.units.toString();
+      _cost.text = args.cost.toString();
+      _price.text = args.price.toString();
+      _utility.text = args.utility.toString();
+    }
     return Scaffold(
       appBar: AppBar(
         title: const Text('Register a product'),
@@ -53,33 +65,47 @@ class _ProductsScreenState extends State<ProductsScreen> {
               CustomButton(
                   text: _isPressed
                       ? const LoadingButton()
-                      : const Text(
-                          'Save',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                              fontFamily: 'Poppins'),
+                      : Text(
+                          args == null ? 'Save' : 'Update',
+                          style: AppTheme.textButton,
                         ),
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
                       _isPressed = true;
                       setState(() {});
                       final product = Product(
+                          id: args?.id,
                           name: _name.text,
                           description: _description.text,
                           units: double.parse(_units.text),
-                          cost:double.parse(_cost.text),
+                          cost: double.parse(_cost.text),
                           price: double.parse(_price.text),
                           utility: double.parse(_utility.text));
-                     if(await _controller.addProduct(product)) {
-                      alertSucces(context, 'Product saved successfully!');
-                      _isPressed = false;
-                      setState(() {
-                      });
-                     } else {
-                      alertError(context, 'Error saving product!');
-                     }
+                      if (args == null) {
+                        if (await _controller.addProduct(product)) {
+                          alertSucces(context, 'Product saved successfully!');
+                          _isPressed = false;
+                          // ignore: use_build_context_synchronously
+                          setState(() {});
+                        } else {
+                          _isPressed = false;
+                          setState(() {});
+                          // ignore: use_build_context_synchronously
+                          alertError(context, 'Error saving product!');
+                        }
+                      } else {
+                        if (await _controller.updateProduct(product)) {
+                          _isPressed = false;
+                          setState(() {});
+                          // ignore: use_build_context_synchronously
+                          alertSucces(context, 'Product updated successfully!');
+                        } else {
+                          _isPressed = false;
+                          setState(() {});
+                          // ignore: use_build_context_synchronously
+                          alertError(context, 'Error updating product!');
+                        }
+                      }
                     }
                   })
             ],

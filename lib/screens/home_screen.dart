@@ -295,8 +295,8 @@ class AlertDetails extends StatelessWidget {
                   radius: 25,
                   backgroundColor: AppTheme.secondary,
                   child: Hero(
-                    tag: 'product',
-                    child: Lottie.asset('assets/json/products.json'),
+                    tag: 'Sales',
+                    child: Lottie.asset('assets/json/sale.json'),
                   ),
                 ),
                 title: const Text(
@@ -314,8 +314,8 @@ class AlertDetails extends StatelessWidget {
                   radius: 25,
                   backgroundColor: AppTheme.secondary,
                   child: Hero(
-                    tag: 'product',
-                    child: Lottie.asset('assets/json/products.json'),
+                    tag: 'purchase',
+                    child: Lottie.asset('assets/json/purchase.json'),
                   ),
                 ),
                 title: const Text(
